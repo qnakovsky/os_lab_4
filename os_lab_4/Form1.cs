@@ -25,6 +25,7 @@ namespace os_lab_4
         Marker marker;
         int indexClient;
         Label[] lbls;
+        ProgressBar[] progress;
         public Form1()
         {
             InitializeComponent();
@@ -38,9 +39,13 @@ namespace os_lab_4
             indexClient = 0;                  
             marker = new Marker(txbxMarker,lblMarkerState);
             lbls = new Label[] { label1, label2, label3, label4, label5, label6 };
+            progress = new ProgressBar[] { progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6 };
+            Random r = new Random();
             for (int i = 0; i < lbls.Length; i++)
             {
-                clients[i] = new Client(lbls[i], i + 1);
+                clients[i] = new Client(lbls[i],progress[i], i + 1);
+                int t = r.Next(5)+1;
+                clients[i].run(t);
             }
         }
 
@@ -50,6 +55,7 @@ namespace os_lab_4
             center.X = (int)(radius * Math.Cos(phi))+pole.X;
             center.Y = (int)(radius * Math.Sin(phi))+pole.Y;            
             clients[indexClient].waitMarker(marker);
+            clients[indexClient].run(1);
             if (marker.State == MarkerState.Captured)
                 sb.Color = Color.Red;
             else

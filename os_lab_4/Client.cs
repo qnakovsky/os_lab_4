@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Threading;
 namespace os_lab_4
 {
     class Client
@@ -11,10 +12,15 @@ namespace os_lab_4
         Label lblMess;
         private bool haveMessage=false;
         int d = 0;
-        public Client(Label mess,int number)
+        Thread myThread;
+        ProgressBar pb;
+       // public ThreadState ThreadState { get { return myThread.ThreadState; } }
+
+        public Client(Label mess,ProgressBar _p, int number)
         {
             lblMess =mess;
             num = number;
+            pb=_p;
         }
         public bool HaveMessage
         {
@@ -35,6 +41,37 @@ namespace os_lab_4
           d = getdest();
           SetText(num.ToString() + Environment.NewLine + "to " + d.ToString());
           haveMessage = true;                                
+        }
+
+        public void run(int time)
+        {   
+            pb.Value = 0;
+            pb.Step = 100 / time;
+            myThread = new Thread(start);
+            myThread.Start(time);            
+        }
+        delegate void SetValueProgres(int value);
+
+        private void SetValue(int value)
+        {
+            if (pb.InvokeRequired)
+            {
+                SetValueProgres d = new SetValueProgres(SetValue);
+                pb.Invoke(d, new object[] { value });
+            }
+            else
+            {
+                pb.Value = value;
+            }
+        }
+        private void start(object time)
+        {
+            for (int i = 1; i < (int)time; i++)
+            {
+                SetValue(i * pb.Step);
+                Thread.Sleep(1000);
+            }
+            SetValue(100);
         }
         public void waitMarker(Marker m)
         {
@@ -66,6 +103,7 @@ namespace os_lab_4
                     }
             }
         }
+
         delegate void SetTextCallback(string text);
 
         private void SetText(string text)
