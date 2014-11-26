@@ -40,13 +40,10 @@ namespace os_lab_4
             marker = new Marker(txbxMarker,lblMarkerState);
             lbls = new Label[] { label1, label2, label3, label4, label5, label6 };
             progress = new ProgressBar[] { progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6 };
-            Random r = new Random();
-
+           
             for (int i = 0; i < lbls.Length; i++)
             {
-                clients[i] = new Client(lbls[i],progress[i], (i + 1));
-                int t = r.Next(5)+1;
-                clients[i].run(t);
+                clients[i] = new Client(lbls[i], progress[i], (i + 1));
             }
         }
 
@@ -78,6 +75,12 @@ namespace os_lab_4
 
         private void btnGoStop_Click(object sender, EventArgs e)
         {
+            Random r = new Random();
+            for (int i = 0; i < lbls.Length; i++)
+            {
+               int t = r.Next(5,15);
+                clients[i].run(t);
+            }
             timer.Enabled =!timer.Enabled;
         }
 
