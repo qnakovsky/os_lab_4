@@ -13,8 +13,7 @@ namespace os_lab_4
         private bool haveMessage=false;
         int d = 0;
         Thread myThread;
-        ProgressBar pb;
-       // public ThreadState ThreadState { get { return myThread.ThreadState; } }
+        ProgressBar pb;      
 
         public Client(Label mess,ProgressBar _p, int number)
         {
@@ -50,28 +49,16 @@ namespace os_lab_4
             myThread = new Thread(start);
             myThread.Start(time);            
         }
-        delegate void SetValueProgres(int value);
-
-        private void SetValue(int value)
-        {
-            if (pb.InvokeRequired)
-            {
-                SetValueProgres d = new SetValueProgres(SetValue);
-                pb.Invoke(d, new object[] { value });
-            }
-            else
-            {
-                pb.Value = value;
-            }
-        }
+        
         private void start(object time)
-        {
+        {            
             for (int i = 1; i < (int)time; i++)
             {
                 SetValue(i * pb.Step);
                 Thread.Sleep(1000);
             }
-            SetValue(100);
+            SetValue(100);            
+            generateMessage();
         }
         public void waitMarker(Marker m)
         {
@@ -85,7 +72,7 @@ namespace os_lab_4
                     m.printState("Маркер несет сообщение:" + m.Message);
                 }
                 else
-                m.printState("Маркер свободен");
+                   m.printState("Маркер свободен");
             }
             else
             {
@@ -94,6 +81,9 @@ namespace os_lab_4
                     m.State = MarkerState.Free;
                     lblMess.Text = num.ToString();
                     m.printState("Маркер свободен");
+                    Random r = new Random();
+                    int time = r.Next(7, 20);                    
+                    run(time);
                 }
                 else
                     if (m.Destination == num)//если доставил
@@ -105,7 +95,6 @@ namespace os_lab_4
         }
 
         delegate void SetTextCallback(string text);
-
         private void SetText(string text)
         {            
             if (lblMess.InvokeRequired)
@@ -115,7 +104,20 @@ namespace os_lab_4
             }
             else
             {
-                this.lblMess.Text = text;
+                lblMess.Text = text;
+            }
+        }
+        delegate void SetValueProgres(int value);
+        private void SetValue(int value)
+        {
+            if (pb.InvokeRequired)
+            {
+                SetValueProgres d = new SetValueProgres(SetValue);
+                pb.Invoke(d, new object[] { value });
+            }
+            else
+            {
+                pb.Value = value;
             }
         }
     }

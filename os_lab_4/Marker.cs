@@ -48,8 +48,7 @@ namespace os_lab_4
         {
             l.Text = r;
         }
-        string stateCur;
-        public override string ToString()
+         public override string ToString()
         {
             if (mState == MarkerState.Free)
                 return "Маркер свободен!";
